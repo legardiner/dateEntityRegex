@@ -1,0 +1,80 @@
+Design Decisions
+------------------------------------
+I utilized arrays in python to store the holiday, days of week, and month names to make it easy to iterate through and reuse.
+This made my regular expressions shorter because then I could utilize python's string substitutions.
+
+I separated my regular expressions into five functions:
+	- holidays
+	- structured numbered dates (MM/DD/YYYY, MM-DD-YY, etc.)
+	- written out dates with a day of week
+	- written out dates
+	- day of week strings
+
+The reason I split out the written forms of date entities that weren't structured or holidays in to three functions was I wanted at least one to be required so it wouldn't just capture other number or empty strings. I also found that they had different patterns when utilizing "the" and "of" (e.g. the 23rd of January, Monday the 23rd). Dates sometimes include or omit leading zeroes, so ? were utilized to make a digit optional.
+
+For each of these regular expressions, I added an optional time component. A time component without the date would be too vague. Time components could either be a specific date or time of day (e.g. morning, afternoon, etc.).
+
+For all regular expressions () with a | were utilized to allowed for different casings and abbreviations. () and ? were used to specify parts of a phrase or words that were optional to cover valid varying cases like Wed and Wednesday or Christmas Day and Christmas. {} were often used to specify the number of digits and [] were used to specify a range of values versus writing them out. \b were utilized to prevent incorrect matches, like "month" when looking for the abbreviation Mon for Monday. 
+
+In order to not double count, I removed a match from the input text once it was discovered. I ordered my functions so it would take the longer regular expression first and then look for shorter ones. This ensured that “.. The mayor addressed the audience on Feb. 14th, 2012..” would result in "Feb. 14th, 2012" and not only "Feb. 14th".
+
+
+Performance Evaluation for Input 1
+------------------------------------
+
+Exact Match
+TP: 11 	FP: 0
+FN:	0	TN: NA
+
+Precision = TP/TP+FP = 11/11 = 1
+Recall = TP/TP+FN = 11/11 = 1
+F1 = 2 * (precision * recall) / (precision + recall) = 2 * (1 * 1) / (1 + 1) = 1
+
+Partial Match
+TP: 11 	FP: 0
+FN:	0	TN: NA
+
+Precision = TP/TP+FP = 11/11 = 1
+Recall = TP/TP+FN = 11/11 = 1
+F1 = 2 * (precision * recall) / (precision + recall) = 2 * (1 * 1) / (1 + 1) = 1
+
+
+Performance Evaluation for Input 2
+------------------------------------
+
+Exact Match
+TP: 4 	FP: 0
+FN:	0	TN: NA
+
+Precision = TP/TP+FP = 4/4 = 1
+Recall = TP/TP+FN = 4/4 = 1
+F1 = 2 * (precision * recall) / (precision + recall) = 2 * (1 * 1) / (1 + 1) = 1
+
+Partial Match
+TP: 4 	FP: 0
+FN:	0	TN: NA
+
+Precision = TP/TP+FP = 4/4 = 1
+Recall = TP/TP+FN = 4/4 = 1
+F1 = 2 * (precision * recall) / (precision + recall) = 2 * (1 * 1) / (1 + 1) = 1
+
+Performance Evaluation for Input 3
+------------------------------------
+
+Exact Match
+TP: 4 	FP: 2
+FN:	2	TN: NA
+
+Precision = TP/TP+FP = 4/6 = 2/3
+Recall = TP/TP+FN = 4/6 = 2/3
+F1 = 2 * (precision * recall) / (precision + recall) = 2 * (2/3 * 2/3) / (2/3 + 2/3) = 2/3
+
+Partial Match
+TP: 6 	FP: 0
+FN:	0	TN: NA
+
+Precision = TP/TP+FP = 6/6 = 1
+Recall = TP/TP+FN = 6/6 = 1
+F1 = 2 * (precision * recall) / (precision + recall) = 2 * (1 * 1) / (1 + 1) = 1
+
+The partial match had a higher precision and recall and in turn, parentheses because it counted some unsual cases, like including a time conversion in parentheses.
